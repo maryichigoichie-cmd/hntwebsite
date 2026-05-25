@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hikari's Helper Services — Tagawa, Fukuoka</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #FAF7F2;
+      --warm-white: #FFFDF9;
+      --terracotta: #C4714A;
+      --terracotta-light: #E8A882;
+      --terracotta-pale: #F5E8DF;
+      --forest: #3D6B4F;
+      --forest-light: #6B9E7E;
+      --forest-pale: #E2EDE6;
+      --gold: #C9962B;
+      --gold-pale: #FBF0D9;
+      --ink: #1E1A16;
+      --ink-mid: #4A4038;
+      --ink-soft: #7A6E64;
+      --border: rgba(30,26,22,0.12);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    body.ja { font-family: 'Noto Sans JP', sans-serif; }
+
+    /* LANG TOGGLE */
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 3px;
+    }
+    .lang-btn {
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--ink-soft);
+      transition: all 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .lang-btn.active {
+      background: var(--terracotta);
+      color: white;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(250,247,242,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      gap: 1rem;
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--terracotta);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink-mid);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--terracotta); }
+    .nav-cta {
+      background: var(--terracotta);
+      color: white !important;
+      padding: 0.45rem 1.2rem;
+      border-radius: 100px;
+      font-size: 0.875rem !important;
+      transition: background 0.2s !important;
+      white-space: nowrap;
+    }
+    .nav-cta:hover { background: var(--forest) !important; color: white !important; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 72px;
+    }
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 4rem 5rem 5rem;
+      background: var(--warm-white);
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--forest);
+      margin-bottom: 1.5rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 28px;
+      height: 2px;
+      background: var(--forest);
+      border-radius: 2px;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.6rem;
+      line-height: 1.12;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+    body.ja .hero-title { font-family: 'Noto Serif JP', serif; font-size: 2.8rem; }
+    .hero-title em { font-style: italic; color: var(--terracotta); }
+    .hero-sub { font-size: 1.05rem; color: var(--ink-soft); max-width: 400px; margin-bottom: 2.5rem; line-height: 1.8; }
+    .hero-badges { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .badge {
+      display: flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 1rem; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 500; border: 1px solid;
+    }
+    .badge-green { background: var(--forest-pale); color: var(--forest); border-color: var(--forest-light); }
+    .badge-terra { background: var(--terracotta-pale); color: var(--terracotta); border-color: var(--terracotta-light); }
+    .badge-gold { background: var(--gold-pale); color: var(--gold); border-color: #D9A83B; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--terracotta); color: white;
+      padding: 0.9rem 2rem; border-radius: 100px;
+      font-size: 0.95rem; font-weight: 600;
+      text-decoration: none; transition: all 0.25s; width: fit-content;
+    }
+    .btn-primary:hover { background: var(--forest); transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      border: 1.5px solid var(--border); color: var(--ink-mid);
+      padding: 0.9rem 2rem; border-radius: 100px;
+      font-size: 0.95rem; font-weight: 500;
+      text-decoration: none; transition: all 0.25s; width: fit-content;
+    }
+    .btn-secondary:hover { border-color: var(--terracotta); color: var(--terracotta); }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .hero-right {
+      position: relative;
+      background: var(--terracotta-pale);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .hero-illustration {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      padding: 3rem;
+    }
+    .profile-card {
+      background: white; border-radius: 24px;
+      padding: 2.5rem 2rem; width: 320px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .profile-avatar {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--terracotta) 0%, var(--gold) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; color: white; margin: 0 auto 1.25rem;
+    }
+    .profile-name {
+      text-align: center; font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; color: var(--ink); margin-bottom: 0.2rem;
+    }
+    .profile-nickname-note {
+      text-align: center; font-size: 0.72rem;
+      color: white; background: var(--terracotta);
+      display: inline-block; padding: 0.18rem 0.7rem;
+      border-radius: 100px; margin: 0 auto 0.5rem;
+      letter-spacing: 0.04em; font-weight: 500;
+    }
+    .profile-nickname-wrap { text-align: center; margin-bottom: 0.75rem; }
+    .profile-tagline { text-align: center; font-size: 0.82rem; color: var(--ink-soft); margin-bottom: 0.5rem; }
+    .profile-phone {
+      text-align: center; font-size: 0.9rem; font-weight: 600;
+      color: var(--forest); margin-bottom: 1.25rem;
+      letter-spacing: 0.04em;
+    }
+    .profile-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+      border-top: 1px solid var(--border); padding-top: 1.25rem;
+    }
+    .stat-item { text-align: center; }
+    .stat-val { font-size: 1.35rem; font-weight: 600; color: var(--terracotta); font-family: 'Playfair Display', serif; }
+    .stat-lbl { font-size: 0.72rem; color: var(--ink-soft); letter-spacing: 0.04em; }
+    .floating-chip {
+      position: absolute; background: white; border-radius: 100px;
+      padding: 0.5rem 1rem; font-size: 0.78rem; font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .chip-1 { top: -18px; right: -18px; color: var(--forest); }
+    .chip-2 { bottom: -18px; left: -18px; color: var(--gold); }
+    .chip-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+    /* PHONE BANNER */
+    .phone-banner {
+      background: var(--forest);
+      color: white;
+      text-align: center;
+      padding: 0.7rem 2rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.03em;
+    }
+    .phone-banner a { color: white; font-weight: 700; text-decoration: none; }
+    .phone-banner a:hover { text-decoration: underline; }
+
+    /* SECTION COMMON */
+    section { padding: 6rem 5rem; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--terracotta); margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif; font-size: 2.4rem;
+      line-height: 1.2; color: var(--ink); margin-bottom: 1rem;
+    }
+    body.ja .section-title { font-family: 'Noto Serif JP', serif; font-size: 2rem; }
+    .section-sub { font-size: 1rem; color: var(--ink-soft); max-width: 520px; line-height: 1.8; }
+    .section-header { margin-bottom: 3.5rem; }
+
+    /* ABOUT */
+    #about { background: var(--warm-white); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .about-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+    .fact-card { background: var(--cream); border-radius: 16px; padding: 1.25rem 1.5rem; border: 1px solid var(--border); }
+    .fact-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .fact-label { font-size: 0.75rem; color: var(--ink-soft); letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+    .fact-val { font-size: 0.95rem; font-weight: 600; color: var(--ink); }
+    .about-visual { background: var(--terracotta-pale); border-radius: 24px; padding: 3rem; text-align: center; }
+    .big-emoji { font-size: 6rem; line-height: 1; margin-bottom: 1rem; }
+    .about-quote {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 1.1rem; color: var(--ink-mid); line-height: 1.7;
+    }
+    body.ja .about-quote { font-family: 'Noto Serif JP', serif; }
+    .about-quote cite { display: block; margin-top: 0.75rem; font-style: normal; font-size: 0.82rem; color: var(--ink-soft); font-family: 'DM Sans', sans-serif; letter-spacing: 0.05em; }
+    .contact-box {
+      background: var(--forest-pale); border: 1px solid var(--forest-light);
+      border-radius: 16px; padding: 1.25rem 1.5rem; margin-top: 2rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .contact-box-icon { font-size: 1.8rem; }
+    .contact-box-label { font-size: 0.75rem; color: var(--forest); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+    .contact-box-num { font-size: 1.2rem; font-weight: 700; color: var(--forest); letter-spacing: 0.06em; }
+
+    /* SERVICES */
+    #services { background: var(--cream); }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .service-card {
+      background: white; border-radius: 20px; padding: 2rem 1.75rem;
+      border: 1px solid var(--border); transition: all 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; background: var(--terracotta);
+      transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
+    }
+    .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card.featured { border-color: var(--terracotta); }
+    .service-card.featured::before { transform: scaleX(1); }
+    .service-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .service-name { font-weight: 600; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.5rem; }
+    .service-jp { font-family: 'Noto Serif JP', serif; font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 0.75rem; letter-spacing: 0.05em; }
+    .service-desc { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.7; }
+    .language-card {
+      grid-column: span 3; background: var(--forest); color: white;
+      border-radius: 20px; padding: 2rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+    }
+    .lang-left { flex: 1; }
+    .lang-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .lang-desc { font-size: 0.88rem; opacity: 0.8; line-height: 1.7; }
+    .lang-flags { display: flex; gap: 1rem; }
+    .lang-flag { background: rgba(255,255,255,0.15); border-radius: 12px; padding: 0.75rem 1.25rem; text-align: center; }
+    .flag-emoji { font-size: 1.5rem; }
+    .flag-name { font-size: 0.75rem; opacity: 0.85; margin-top: 0.25rem; }
+
+    /* PRICING */
+    #pricing { background: var(--warm-white); }
+    .pricing-center { text-align: center; margin-bottom: 4rem; }
+    .pricing-center .section-sub { margin: 0 auto; }
+    .rate-display {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin: 2.5rem auto;
+      background: var(--cream); border-radius: 24px;
+      padding: 2.5rem 4rem; width: fit-content;
+      border: 1px solid var(--border);
+    }
+    .rate-yen { font-size: 2rem; color: var(--ink-soft); font-weight: 300; padding-top: 0.5rem; }
+    .rate-num { font-family: 'Playfair Display', serif; font-size: 5rem; color: var(--terracotta); line-height: 1; }
+    .rate-per { font-size: 1rem; color: var(--ink-soft); padding-bottom: 0.25rem; align-self: flex-end; }
+    .conditions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 800px; margin: 0 auto; }
+    .condition-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; text-align: center; }
+    .cond-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .cond-title { font-weight: 600; font-size: 0.9rem; color: var(--ink); margin-bottom: 0.4rem; }
+    .cond-desc { font-size: 0.8rem; color: var(--ink-soft); line-height: 1.6; }
+
+    /* BOOKING */
+    #booking { background: var(--cream); }
+    .booking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .booking-info .section-sub { margin-bottom: 2rem; }
+    .steps { display: flex; flex-direction: column; gap: 1.25rem; }
+    .step { display: flex; gap: 1rem; align-items: flex-start; }
+    .step-num {
+      width: 36px; height: 36px; min-width: 36px; border-radius: 50%;
+      background: var(--terracotta); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem;
+    }
+    .step-content { padding-top: 0.25rem; }
+    .step-title { font-weight: 600; font-size: 0.95rem; color: var(--ink); }
+    .step-desc { font-size: 0.85rem; color: var(--ink-soft); margin-top: 0.2rem; }
+    .direct-contact {
+      background: white; border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.25rem 1.5rem;
+      margin-top: 2rem; display: flex; align-items: center; gap: 1rem;
+    }
+    .dc-icon { font-size: 1.6rem; }
+    .dc-label { font-size: 0.75rem; color: var(--ink-soft); margin-bottom: 0.15rem; }
+    .dc-num { font-size: 1.15rem; font-weight: 700; color: var(--terracotta); letter-spacing: 0.06em; }
+    .booking-form { background: white; border-radius: 24px; padding: 2.5rem; border: 1px solid var(--border); }
+    .form-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--ink); margin-bottom: 1.5rem; }
+    body.ja .form-title { font-family: 'Noto Serif JP', serif; }
+    .form-row { margin-bottom: 1.25rem; }
+    .form-row label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--ink-mid); margin-bottom: 0.4rem; letter-spacing: 0.03em; }
+    .form-row input, .form-row select, .form-row textarea {
+      width: 100%; padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: inherit; font-size: 0.9rem; color: var(--ink);
+      background: var(--cream); transition: border-color 0.2s; outline: none;
+    }
+    .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: var(--terracotta); background: white; }
+    .form-row textarea { resize: vertical; min-height: 90px; }
+    .form-submit {
+      width: 100%; padding: 0.9rem;
+      background: var(--terracotta); color: white;
+      border: none; border-radius: 100px;
+      font-size: 0.95rem; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: background 0.25s;
+    }
+    .form-submit:hover { background: var(--forest); }
+    .form-note { text-align: center; font-size: 0.75rem; color: var(--ink-soft); margin-top: 1rem; }
+    .success-msg {
+      display: none; background: var(--forest-pale);
+      border: 1px solid var(--forest-light); border-radius: 12px;
+      padding: 1rem 1.25rem; color: var(--forest);
+      font-size: 0.9rem; font-weight: 500; margin-top: 1rem; text-align: center;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--ink); color: rgba(255,255,255,0.7);
+      padding: 3rem 5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: white; }
+    .footer-note { font-size: 0.82rem; }
+    .footer-heart { color: var(--terracotta-light); }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 4rem 2rem; }
+      .hero-right { min-height: 420px; }
+      .hero-title { font-size: 2.6rem; }
+      section { padding: 4rem 2rem; }
+      .about-grid, .booking-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .language-card { grid-column: span 2; flex-direction: column; }
+      .conditions-grid { grid-template-columns: 1fr; }
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1rem; }
+      footer { flex-direction: column; text-align: center; padding: 2rem; }
+    }
+    @media (max-width: 600px) {
+      .services-grid { grid-template-columns: 1fr; }
+      .language-card { grid-column: span 1; }
+      .hero-title { font-size: 2rem; }
+      .nav-links li:not(:last-child) { display: none; }
+      .about-facts { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PHONE BANNER -->
+  <div class="phone-banner" id="phone-banner">
+    📞 <span data-en="Call or text me:" data-ja="お電話・メッセージはこちら："></span>
+    <a href="tel:07054898802">070-5489-8802</a>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo" data-en="Hikari ✿" data-ja="ヒカリ ✿">Hikari ✿</a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#about" data-en="About" data-ja="自己紹介">About</a></li>
+        <li><a href="#services" data-en="Services" data-ja="サービス">Services</a></li>
+        <li><a href="#pricing" data-en="Rates" data-ja="料金">Rates</a></li>
+        <li><a href="#booking" class="nav-cta" data-en="Book Now" data-ja="予約する">Book Now</a></li>
+      </ul>
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('ja')">日本語</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-left">
+      <div class="hero-eyebrow" data-en="Tagawa, Fukuoka" data-ja="福岡県 田川市">Tagawa, Fukuoka</div>
+      <h1 class="hero-title" data-en="Your trusted<br/><em>helper</em> at home" data-ja="あなたの<br/><em>頼れる</em>お手伝いさん">Your trusted<br/><em>helper</em> at home</h1>
+      <p class="hero-sub" data-en="Friendly, reliable, and caring personal services — from babysitting to pet care — right here in Tagawa city." data-ja="ベビーシッターからペットのお世話まで、田川市内で丁寧・親切・安心のサービスを提供しています。">Friendly, reliable, and caring personal services — from babysitting to pet care — right here in Tagawa city.</p>
+      <div class="hero-badges">
+        <span class="badge badge-green" data-en="🚲 Within Tagawa" data-ja="🚲 田川市内のみ">🚲 Within Tagawa</span>
+        <span class="badge badge-terra">¥1,500 / <span data-en="hour" data-ja="時間">hour</span></span>
+        <span class="badge badge-gold" data-en="📅 By appointment" data-ja="📅 予約制">📅 By appointment</span>
+      </div>
+      <div class="hero-btns">
+        <a href="#booking" class="btn-primary" data-en="Book an Appointment →" data-ja="予約はこちら →">Book an Appointment →</a>
+        <a href="#services" class="btn-secondary" data-en="See Services" data-ja="サービス一覧">See Services</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div style="position:absolute;top:10%;left:8%;width:180px;height:180px;border-radius:50%;background:var(--terracotta);opacity:0.12;"></div>
+      <div style="position:absolute;bottom:15%;right:5%;width:120px;height:120px;border-radius:50%;background:var(--forest);opacity:0.12;"></div>
+      <div class="hero-illustration">
+        <div class="profile-card">
+          <div class="floating-chip chip-1">
+            <span class="chip-dot"></span> <span data-en="Available for booking" data-ja="予約受付中">Available for booking</span>
+          </div>
+          <div class="floating-chip chip-2" style="color:var(--gold)">
+            <span class="chip-dot"></span> <span data-en="Tagawa area only" data-ja="田川市内のみ">Tagawa area only</span>
+          </div>
+          <div class="profile-avatar">H</div>
+          <div class="profile-name">Hikari</div>
+          <div class="profile-nickname-wrap">
+            <span class="profile-nickname-note" data-en="nickname" data-ja="ニックネーム">nickname</span>
+          </div>
+          <div class="profile-tagline" data-en="Filipino Helper · Tagawa, Fukuoka 🇵🇭" data-ja="フィリピン人ヘルパー・田川市 🇵🇭">Filipino Helper · Tagawa, Fukuoka 🇵🇭</div>
+          <div class="profile-phone">📞 070-5489-8802</div>
+          <div class="profile-stats">
+            <div class="stat-item">
+              <div class="stat-val">¥1,500</div>
+              <div class="stat-lbl" data-en="per hour" data-ja="1時間">per hour</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-val">7+</div>
+              <div class="stat-lbl" data-en="services" data-ja="サービス">services</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-val">1yr</div>
+              <div class="stat-lbl" data-en="in Japan" data-ja="在日">in Japan</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-val">3</div>
+              <div class="stat-lbl" data-en="languages" data-ja="言語">languages</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-grid">
+      <div>
+        <div class="section-label" data-en="About Me" data-ja="自己紹介">About Me</div>
+        <h2 class="section-title" data-en="A warm heart<br/>from the Philippines" data-ja="フィリピンから<br/>温かい心で">A warm heart<br/>from the Philippines</h2>
+        <p style="color:var(--ink-soft);line-height:1.8;margin-bottom:1.5rem;" data-en="Hello! I go by <strong>Hikari</strong> — it's my nickname, feel free to call me that! I'm a 39-year-old Filipina living in Tagawa for one year now. I love this community and I'm passionate about helping families and individuals with their everyday needs." data-ja="こんにちは！<strong>ヒカリ</strong>と呼んでください。これはニックネームです😊 39歳のフィリピン人女性で、田川市に住んで1年になります。地域の皆さんのお役に立てることがとても嬉しいです。">Hello! I go by <strong>Hikari</strong> — it's my nickname, feel free to call me that! I'm a 39-year-old Filipina living in Tagawa for one year now. I love this community and I'm passionate about helping families and individuals with their everyday needs.</p>
+        <p style="color:var(--ink-soft);line-height:1.8;" data-en="I enjoy Japanese food — especially ramen and sushi! — and I'm learning more about Japanese culture every day. I bring warmth, reliability, and a big smile to every job I do." data-ja="日本食が大好きで、特にラーメンとお寿司が好きです！毎日日本の文化をもっと学んでいます。お仕事はいつも笑顔で、丁寧に取り組みます。">I enjoy Japanese food — especially ramen and sushi! — and I'm learning more about Japanese culture every day. I bring warmth, reliability, and a big smile to every job I do.</p>
+        <div class="about-facts">
+          <div class="fact-card">
+            <div class="fact-icon">🇵🇭</div>
+            <div class="fact-label" data-en="Nationality" data-ja="国籍">Nationality</div>
+            <div class="fact-val" data-en="Filipino" data-ja="フィリピン人">Filipino</div>
+          </div>
+          <div class="fact-card">
+            <div class="fact-icon">🗺️</div>
+            <div class="fact-label" data-en="Location" data-ja="住所">Location</div>
+            <div class="fact-val" data-en="Tagawa, Fukuoka" data-ja="福岡県田川市">Tagawa, Fukuoka</div>
+          </div>
+          <div class="fact-card">
+            <div class="fact-icon">🍜</div>
+            <div class="fact-label" data-en="Loves" data-ja="好きなもの">Loves</div>
+            <div class="fact-val" data-en="Japanese food!" data-ja="日本食！">Japanese food!</div>
+          </div>
+          <div class="fact-card">
+            <div class="fact-icon">🗣️</div>
+            <div class="fact-label" data-en="Languages" data-ja="言語">Languages</div>
+            <div class="fact-val" data-en="Filipino, Cebuano, English, 日本語" data-ja="フィリピン語・セブアノ語・英語・日本語">Filipino, Cebuano, English, 日本語</div>
+          </div>
+        </div>
+        <div class="contact-box">
+          <div class="contact-box-icon">📞</div>
+          <div>
+            <div class="contact-box-label" data-en="PHONE / LINE" data-ja="電話 / LINE">PHONE / LINE</div>
+            <div class="contact-box-num">070-5489-8802</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="big-emoji">🌸</div>
+        <p class="about-quote" data-en='"I treat every home like my own — with love, care, and attention to detail. Your comfort is my priority."' data-ja='「すべてのお家を自分の家のように大切に扱います。愛情と丁寧さをもって、お客様の快適さを一番に考えます。」'>"I treat every home like my own — with love, care, and attention to detail. Your comfort is my priority."
+          <cite data-en="— Hikari (nickname)" data-ja="— ヒカリ（ニックネーム）">— Hikari (nickname)</cite>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="section-header">
+      <div class="section-label" data-en="What I Offer" data-ja="サービス内容">What I Offer</div>
+      <h2 class="section-title" data-en="Services I can help with" data-ja="お手伝いできること">Services I can help with</h2>
+      <p class="section-sub" data-en="All services are available within Tagawa city (by bicycle). Book in advance and I'll be there!" data-ja="すべてのサービスは田川市内（自転車で移動）で対応しています。事前にご予約ください！">All services are available within Tagawa city (by bicycle). Book in advance and I'll be there!</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card featured">
+        <div class="service-icon">👶</div>
+        <div class="service-name" data-en="Babysitting" data-ja="ベビーシッター">Babysitting</div>
+        <div class="service-jp">ベビーシッター</div>
+        <p class="service-desc" data-en="Loving, attentive childcare while you're away. Your little ones will be in safe, caring hands." data-ja="外出中の親御さんに代わって、愛情を持って丁寧にお子様の面倒を見ます。">Loving, attentive childcare while you're away. Your little ones will be in safe, caring hands.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🧹</div>
+        <div class="service-name" data-en="House Cleaning" data-ja="家の掃除">House Cleaning</div>
+        <div class="service-jp">家の掃除</div>
+        <p class="service-desc" data-en="Thorough cleaning of your home — floors, bathrooms, kitchen, living areas and more." data-ja="床・お風呂・キッチン・リビングなど、お家全体を丁寧に掃除します。">Thorough cleaning of your home — floors, bathrooms, kitchen, living areas and more.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛒</div>
+        <div class="service-name" data-en="Grocery Shopping" data-ja="買い物代行">Grocery Shopping</div>
+        <div class="service-jp">お買い物代行</div>
+        <p class="service-desc" data-en="I'll do your grocery run, pick up your list, and bring everything back fresh and ready." data-ja="リストをお渡しいただければ、代わりに買い物をしてお届けします。">I'll do your grocery run, pick up your list, and bring everything back fresh and ready.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🏠</div>
+        <div class="service-name" data-en="House-sitting" data-ja="留守番・ハウスシッター">House-sitting</div>
+        <div class="service-jp">留守番・ハウスシッター</div>
+        <p class="service-desc" data-en="Peace of mind while you're on vacation — I'll keep your home tidy, safe, and well-maintained." data-ja="旅行中もご安心ください。お家を清潔に、安全に管理します。">Peace of mind while you're on vacation — I'll keep your home tidy, safe, and well-maintained.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🐾</div>
+        <div class="service-name" data-en="Pet Care" data-ja="ペットの世話">Pet Care</div>
+        <div class="service-jp">ペットの世話</div>
+        <p class="service-desc" data-en="Feeding, walking, and giving your furry friends love and attention while you travel." data-ja="ご旅行中のペットのご飯・散歩・お世話を愛情を持って行います。">Feeding, walking, and giving your furry friends love and attention while you travel.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🌿</div>
+        <div class="service-name" data-en="Plant Care" data-ja="植物のお世話">Plant Care</div>
+        <div class="service-jp">植物のお世話</div>
+        <p class="service-desc" data-en="Watering, sunlight checks, and gentle care for your indoor and outdoor plants during your absence." data-ja="外出中の観葉植物や庭の植物に水やり・日光管理などを丁寧に行います。">Watering, sunlight checks, and gentle care for your indoor and outdoor plants during your absence.</p>
+      </div>
+      <div class="language-card">
+        <div class="lang-left">
+          <div class="lang-title" data-en="🗣️ Language Lessons — Filipino & Cebuano" data-ja="🗣️ 言語レッスン — フィリピン語 & セブアノ語">🗣️ Language Lessons — Filipino & Cebuano</div>
+          <p class="lang-desc" data-en="Want to learn Filipino (Tagalog) or Cebuano (Bisaya)? I offer fun, friendly lessons for beginners and intermediate learners. Great for those interested in Philippine culture, planning a trip, or connecting with Filipino friends and family." data-ja="フィリピン語（タガログ語）やセブアノ語（ビサヤ語）を学びたい方へ！初心者から中級者まで、楽しく丁寧に教えます。フィリピン文化に興味のある方や、旅行を計画している方にもぴったりです。">Want to learn Filipino (Tagalog) or Cebuano (Bisaya)? I offer fun, friendly lessons for beginners and intermediate learners. Great for those interested in Philippine culture, planning a trip, or connecting with Filipino friends and family.</p>
+        </div>
+        <div class="lang-flags">
+          <div class="lang-flag">
+            <div class="flag-emoji">🇵🇭</div>
+            <div class="flag-name" data-en="Filipino<br/>(Tagalog)" data-ja="フィリピン語<br/>（タガログ語）">Filipino<br/>(Tagalog)</div>
+          </div>
+          <div class="lang-flag">
+            <div class="flag-emoji">🌺</div>
+            <div class="flag-name" data-en="Cebuano<br/>(Bisaya)" data-ja="セブアノ語<br/>（ビサヤ語）">Cebuano<br/>(Bisaya)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="pricing-center">
+      <div class="section-label" data-en="Rates & Conditions" data-ja="料金・条件">Rates & Conditions</div>
+      <h2 class="section-title" data-en="Simple, honest pricing" data-ja="シンプルな料金体系">Simple, honest pricing</h2>
+      <p class="section-sub" data-en="One clear hourly rate for all services. No hidden fees, no surprises." data-ja="すべてのサービスで一律の時間料金。追加料金なし、安心してご利用いただけます。">One clear hourly rate for all services. No hidden fees, no surprises.</p>
+      <div class="rate-display">
+        <span class="rate-yen">¥</span>
+        <span class="rate-num">1,500</span>
+        <span class="rate-per">&nbsp;/ <span data-en="hour" data-ja="時間">hour</span></span>
+      </div>
+    </div>
+    <div class="conditions-grid">
+      <div class="condition-card">
+        <div class="cond-icon">🚲</div>
+        <div class="cond-title" data-en="Tagawa City Only" data-ja="田川市内のみ">Tagawa City Only</div>
+        <p class="cond-desc" data-en="I travel by bicycle, so services are limited to areas reachable within Tagawa city. Please confirm your location when booking." data-ja="自転車で移動するため、田川市内でのサービスに限られます。ご予約時にご住所をお知らせください。">I travel by bicycle, so services are limited to areas reachable within Tagawa city. Please confirm your location when booking.</p>
+      </div>
+      <div class="condition-card">
+        <div class="cond-icon">📅</div>
+        <div class="cond-title" data-en="Advance Booking Required" data-ja="事前予約が必要">Advance Booking Required</div>
+        <p class="cond-desc" data-en="Please book your appointment in advance before your planned service date to ensure availability. Same-day requests may not be accepted." data-ja="ご希望の日程の前日までにご予約ください。当日のご依頼はお受けできない場合があります。">Please book your appointment in advance before your planned service date to ensure availability. Same-day requests may not be accepted.</p>
+      </div>
+      <div class="condition-card">
+        <div class="cond-icon">⏰</div>
+        <div class="cond-title" data-en="Minimum 1 Hour" data-ja="最低1時間から">Minimum 1 Hour</div>
+        <p class="cond-desc" data-en="All services have a minimum booking of 1 hour. Additional time is charged per hour. Payment is made after the service is completed." data-ja="最低1時間からのご予約となります。追加時間は1時間単位です。お支払いはサービス終了後にお願いします。">All services have a minimum booking of 1 hour. Additional time is charged per hour. Payment is made after the service is completed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section id="booking">
+    <div class="booking-grid">
+      <div class="booking-info">
+        <div class="section-label" data-en="Book an Appointment" data-ja="ご予約">Book an Appointment</div>
+        <h2 class="section-title" data-en="Let's work together!" data-ja="一緒に頑張りましょう！">Let's work together!</h2>
+        <p class="section-sub" style="margin-bottom:2rem;" data-en="Fill out the form and I'll get back to you as soon as possible to confirm your booking. Please request at least 1–2 days before your needed date." data-ja="フォームにご記入いただくか、直接お電話ください。ご希望日の1〜2日前までにご連絡いただけると助かります。">Fill out the form and I'll get back to you as soon as possible to confirm your booking. Please request at least 1–2 days before your needed date.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-title" data-en="Fill in your details" data-ja="情報を入力する">Fill in your details</div>
+              <div class="step-desc" data-en="Tell me your name, contact info, preferred service and date." data-ja="お名前・連絡先・希望サービス・日程をご記入ください。">Tell me your name, contact info, preferred service and date.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-title" data-en="I'll confirm availability" data-ja="日程を確認する">I'll confirm availability</div>
+              <div class="step-desc" data-en="I'll reply to confirm the schedule and discuss any details." data-ja="折り返しご連絡し、日程や詳細を確認します。">I'll reply to confirm the schedule and discuss any details.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-title" data-en="Service day!" data-ja="サービス当日！">Service day!</div>
+              <div class="step-desc" data-en="I arrive on time, ready to help. Payment after service." data-ja="時間通りにお伺いします。お支払いはサービス終了後にお願いします。">I arrive on time, ready to help. Payment after service.</div>
+            </div>
+          </div>
+        </div>
+        <div class="direct-contact">
+          <div class="dc-icon">📞</div>
+          <div>
+            <div class="dc-label" data-en="Or contact me directly" data-ja="または直接ご連絡ください">Or contact me directly</div>
+            <div class="dc-num">070-5489-8802</div>
+          </div>
+        </div>
+      </div>
+      <div class="booking-form">
+        <div class="form-title" data-en="Request a Booking" data-ja="予約リクエスト">Request a Booking</div>
+        <div class="form-row">
+          <label data-en="Your Name / お名前" data-ja="お名前">Your Name / お名前</label>
+          <input type="text" id="f-name" data-placeholder-en="e.g. Tanaka Yuki" data-placeholder-ja="例：田中 ゆき" placeholder="e.g. Tanaka Yuki" />
+        </div>
+        <div class="form-row">
+          <label data-en="Contact (LINE / Phone / Email)" data-ja="連絡先（LINE / 電話 / メール）">Contact (LINE / Phone / Email)</label>
+          <input type="text" id="f-contact" data-placeholder-en="e.g. LINE ID or phone number" data-placeholder-ja="例：LINE IDまたは電話番号" placeholder="e.g. LINE ID or phone number" />
+        </div>
+        <div class="form-row">
+          <label data-en="Service Needed / サービス" data-ja="ご希望のサービス">Service Needed / サービス</label>
+          <select id="f-service">
+            <option value="" data-en="— Select a service —" data-ja="— サービスを選んでください —">— Select a service —</option>
+            <option data-en="Babysitting" data-ja="ベビーシッター">Babysitting</option>
+            <option data-en="House Cleaning" data-ja="家の掃除">House Cleaning</option>
+            <option data-en="Grocery Shopping" data-ja="買い物代行">Grocery Shopping</option>
+            <option data-en="House-sitting (vacation)" data-ja="留守番・ハウスシッター（旅行中）">House-sitting (vacation)</option>
+            <option data-en="Pet Care" data-ja="ペットの世話">Pet Care</option>
+            <option data-en="Plant Care" data-ja="植物のお世話">Plant Care</option>
+            <option data-en="Filipino Language Lesson" data-ja="フィリピン語レッスン">Filipino Language Lesson</option>
+            <option data-en="Cebuano Language Lesson" data-ja="セブアノ語レッスン">Cebuano Language Lesson</option>
+            <option data-en="Multiple services" data-ja="複数のサービス">Multiple services</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label data-en="Preferred Date / 希望日" data-ja="ご希望日">Preferred Date / 希望日</label>
+          <input type="date" id="f-date" />
+        </div>
+        <div class="form-row">
+          <label data-en="Estimated Hours / 予定時間" data-ja="ご利用予定時間">Estimated Hours / 予定時間</label>
+          <select id="f-hours">
+            <option value="" data-en="— Select hours —" data-ja="— 時間を選んでください —">— Select hours —</option>
+            <option data-en="1 hour" data-ja="1時間">1 hour</option>
+            <option data-en="2 hours" data-ja="2時間">2 hours</option>
+            <option data-en="3 hours" data-ja="3時間">3 hours</option>
+            <option data-en="4 hours" data-ja="4時間">4 hours</option>
+            <option data-en="Half day (5–6 hrs)" data-ja="半日（5〜6時間）">Half day (5–6 hrs)</option>
+            <option data-en="Full day (7–8 hrs)" data-ja="1日（7〜8時間）">Full day (7–8 hrs)</option>
+            <option data-en="Multiple days" data-ja="複数日">Multiple days</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label data-en="Additional Notes / 備考" data-ja="備考・ご要望">Additional Notes / 備考</label>
+          <textarea id="f-notes" data-placeholder-en="Location in Tagawa, any special requests, etc." data-placeholder-ja="田川市内のご住所、ご要望など" placeholder="Location in Tagawa, any special requests, etc."></textarea>
+        </div>
+        <button class="form-submit" onclick="submitForm()" data-en="Send Booking Request ✉️" data-ja="予約リクエストを送る ✉️">Send Booking Request ✉️</button>
+        <div id="success-msg" class="success-msg" data-en="✅ Thank you! Your booking request has been sent. I'll get back to you soon. — Hikari 🌸" data-ja="✅ ありがとうございます！予約リクエストを受け付けました。折り返しご連絡します。— ヒカリ 🌸">
+          ✅ Thank you! Your booking request has been sent. I'll get back to you soon. — Hikari 🌸
+        </div>
+        <p class="form-note" data-en="🚲 Service area: Tagawa city only  |  ¥1,500 / hour  |  📞 070-5489-8802" data-ja="🚲 田川市内のみ  |  ¥1,500 / 時間  |  📞 070-5489-8802">🚲 Service area: Tagawa city only  |  ¥1,500 / hour  |  📞 070-5489-8802</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <div class="footer-logo" data-en="Hikari's Helper Services ✿" data-ja="ヒカリのお手伝いサービス ✿">Hikari's Helper Services ✿</div>
+      <div style="font-size:0.8rem;margin-top:0.35rem;" data-en="Tagawa, Fukuoka, Japan 🇯🇵  ·  📞 070-5489-8802" data-ja="福岡県田川市 🇯🇵  ·  📞 070-5489-8802">Tagawa, Fukuoka, Japan 🇯🇵  ·  📞 070-5489-8802</div>
+    </div>
+    <div class="footer-note" data-en="Made with ♥ from the Philippines, for Tagawa · ¥1,500/hr · Book in advance" data-ja="フィリピンから田川へ、愛を込めて ♥ · ¥1,500/時間 · 事前予約制">
+      Made with <span class="footer-heart">♥</span> from the Philippines, for Tagawa &nbsp;·&nbsp; ¥1,500/hr &nbsp;·&nbsp; Book in advance
+    </div>
+  </footer>
+
+  <script>
+    let currentLang = 'en';
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.body.classList.toggle('ja', lang === 'ja');
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.lang-btn')[lang === 'en' ? 0 : 1].classList.add('active');
+
+      document.querySelectorAll('[data-en]').forEach(el => {
+        const val = el.getAttribute('data-' + lang);
+        if (!val) return;
+        // For elements with children (like buttons with spans inside), skip innerHTML change if it would break structure
+        if (el.tagName === 'SELECT') return; // handled separately
+        if (el.children.length === 0 || el.tagName === 'P' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'DIV' || el.tagName === 'SPAN' || el.tagName === 'A' || el.tagName === 'BUTTON') {
+          el.innerHTML = val;
+        }
+      });
+
+      // Handle select options
+      document.querySelectorAll('select option[data-' + lang + ']').forEach(opt => {
+        opt.text = opt.getAttribute('data-' + lang);
+      });
+
+      // Handle placeholders
+      document.querySelectorAll('[data-placeholder-' + lang + ']').forEach(el => {
+        el.placeholder = el.getAttribute('data-placeholder-' + lang);
+      });
+
+      // Phone banner special
+      const pbSpan = document.querySelector('#phone-banner span');
+      if (pbSpan) pbSpan.innerHTML = pbSpan.getAttribute('data-' + lang);
+    }
+
+    function submitForm() {
+      const name = document.getElementById('f-name').value.trim();
+      const contact = document.getElementById('f-contact').value.trim();
+      const service = document.getElementById('f-service').value;
+      const date = document.getElementById('f-date').value;
+      const alertMsg = currentLang === 'ja'
+        ? '必須項目（お名前・連絡先・サービス・日程）をすべて入力してください。'
+        : 'Please fill in all required fields (Name, Contact, Service, and Date).';
+      if (!name || !contact || !service || !date) { alert(alertMsg); return; }
+      const msg = document.getElementById('success-msg');
+      msg.style.display = 'block';
+      const btn = document.querySelector('.form-submit');
+      btn.disabled = true;
+      btn.textContent = currentLang === 'ja' ? '送信完了 ✓' : 'Request Sent ✓';
+      btn.style.background = 'var(--forest)';
+    }
+
+    const dateInput = document.getElementById('f-date');
+    dateInput.setAttribute('min', new Date().toISOString().split('T')[0]);
+  </script>
+</body>
+</html>
